@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="need_module">
+		<item>com.turbochilli.rollingsky</item>
+        <item>fun.music.rollingsky.mi</item>
+        <item>com.turbochilli.rollingsky_cn.huawei</item>
+		<item>com.turbochilli.rollingsky_cn.vivo</item>
+        <item>com.cmplay.dancingline</item>
+        <item>com.fgol.hsw.zq</item>
+        <item>com.fgol</item>
+	</string-array>
+</resources>
