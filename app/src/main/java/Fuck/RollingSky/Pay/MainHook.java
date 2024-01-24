@@ -1,6 +1,31 @@
 package Fuck.RollingSky.Pay;
-
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.widget.Toast;
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Locale;
 public class MainHook implements IXposedHookLoadPackage {
+            if (BuildConfig.APPLICATION_ID.equals(lpparam.packageName)) {
+            XposedHelpers.findAndHookMethod(
+                MainActivity.class.getName(),
+                lpparam.classLoader,
+                "isModuleActivated",
+                XC_MethodReplacement.returnConstant(true));
+                }
     //Hook部分暂不开源
     //Hook part is not open source for the time being.
 /**
