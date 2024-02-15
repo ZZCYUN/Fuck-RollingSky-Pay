@@ -7,7 +7,6 @@
     <string name="Modules_Off">模塊未啟動</string>
     <string name="Modules_On">模塊已啟動</string>
     <string name="Modules_On_VM">虛擬環境啟動</string>
-    <string name="Modules_On_VMOS">虛擬機啟動</string>
     <string name="Modules_Off_Tips">當前模塊未啟動，您將無法使用本模塊的免內購和過聯網驗證功能\n\n解決方法：\n如果沒有XP環境可以嘗試刷入LSPosed或Edxposed並勾選此模塊後重啟手機\n如果有XP環境請勾選此模塊並重啟手機</string>
     <string name="OK">好</string>
     <string name="Open_Browser">正在嘗試拉起瀏覽器</string>
@@ -21,10 +20,7 @@
     <string name="Load_Ing">稍安勿躁......\n耐心，是生活的關鍵。</string>
     <string name="No_Web">網絡鏈接異常！</string>
     <string name="No">取消</string>
-    <string name="New_Ver">發現新版本</string>
-    <string name="Update">新版本可用，是否更新？</string>
     <string name="Inspect_Fail">檢查更新失敗，請檢查你的網絡</string>
-    <string name="Up">更新</string>
     <string name="danger">重要提示</string>
     <string name="alert">隱藏桌面圖標後，你可以在xposed管理器打開此模塊。\n部分系統可能不支持，依然會存在桌面圖標，但無法正常進入此程序！\n無特殊需求不要這樣做！</string>
     <string name="sb">我依然隱藏</string>

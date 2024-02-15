@@ -10,5 +10,4 @@ public class OpenActivity extends Activity {
 		startActivity(intent);
         finish();
     }
-    
 }

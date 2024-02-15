@@ -9,13 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,12 +27,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
-    private int currentVersionCode = (int) BuildConfig.VERSION_CODE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +40,9 @@ public class MainActivity extends Activity {
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         Button openBrowserButton = findViewById(R.id.clickButton);
         final TextView moduleStatusTextView = findViewById(R.id.moduleStatusTextView);
-        // 创建一个GradientDrawable对象，并设置为圆角矩形
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-        gradientDrawable.setCornerRadii(new float[]{30, 30, 30, 30, 30, 30, 30, 30}); // 四个角的半径，可以根据需要调整
+        gradientDrawable.setCornerRadii(new float[]{30, 30, 30, 30, 30, 30, 30, 30});
         gradientDrawable.setColor(getResources().getColor(R.color.buttonColor));
         if (isModuleActivated()) {
 			moduleStatusTextView.setText(R.string.Modules_On);
@@ -58,12 +51,6 @@ public class MainActivity extends Activity {
 			Matcher matcher2 = Pattern.compile(".*/0/.*/0.*").matcher(absolutePath);
 			if (matcher.find() || matcher2.find()) {
 				moduleStatusTextView.setText(R.string.Modules_On_VM);
-			}
-			if (checkVmos()) {
-				moduleStatusTextView.setText(R.string.Modules_On_VMOS);
-			}
-			if (checkTitan()) {
-				moduleStatusTextView.setText(R.string.Modules_On_VMOS);
 			}
         } else {
             AlertDialog dialog = new AlertDialog.Builder(this)
@@ -74,7 +61,6 @@ public class MainActivity extends Activity {
                 .create();
             dialog.show();
         }
-        // 设置按钮的背景为GradientDrawable
         openBrowserButton.setBackground(gradientDrawable);
         openBrowserButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -83,8 +69,6 @@ public class MainActivity extends Activity {
                     String script = Locale.getDefault().getScript();
                     if ("en".equals(language)) {
                         new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb_en.txt");
-                    } else if ("zh".equals(language) && "Hans".equals(script)) {
-                        new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb.txt");
                     } else if ("zh".equals(language) && "Hant".equals(script)) {
                         new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb_tw.txt");
                     } else {
@@ -120,7 +104,6 @@ public class MainActivity extends Activity {
                 }
             });
         Button openRSButton = findViewById(R.id.openRSButton);
-        // 创建一个GradientDrawable对象，并设置为圆角矩形
         GradientDrawable rsButtonDrawable = new GradientDrawable();
         rsButtonDrawable.setShape(GradientDrawable.RECTANGLE);
         rsButtonDrawable.setCornerRadii(new float[]{30, 30, 30, 30, 30, 30, 30, 30});
@@ -129,7 +112,6 @@ public class MainActivity extends Activity {
         openRSButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // 打开com.turbochilli.rollingsky应用
                     String packageName = "com.turbochilli.rollingsky";
                     Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
                     if (intent != null) {
@@ -143,13 +125,9 @@ public class MainActivity extends Activity {
                         String language = Locale.getDefault().getLanguage();
                         String script = Locale.getDefault().getScript();
                         if ("en".equals(language)) {
-                            mi= "XiaoMi";
+                            mi = "XiaoMi";
                             hw = "Hwawei";
 							vo = "VIVO";
-                        } else if ("zh".equals(language) && "Hans".equals(script)) {
-                            mi = "小米版";
-                            hw = "华为版";
-							vo = "VIVO版";
                         } else if ("zh".equals(language) && "Hant".equals(script)) {;
                             mi = "小米版";
                             hw = "華為版";
@@ -164,7 +142,6 @@ public class MainActivity extends Activity {
                         builder.setTitle(R.string.mrs)
                             .setItems(items, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // 处理点击事件
                                     String selectedOption = items[which];
                                     if (selectedOption.equals(mi)) {
                                         String packageName = "fun.music.rollingsky.mi";
@@ -196,7 +173,6 @@ public class MainActivity extends Activity {
 									}
                                 }
                             });
-
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     }
@@ -221,10 +197,6 @@ public class MainActivity extends Activity {
                         dl = "Dancing Line";
                         zq = "Hungry Shark World";
                         jh = "Hungry Shark Evolution";
-                    } else if ("zh".equals(language) && "Hans".equals(script)) {
-                        dl = "跳舞的线";
-                        zq = "饥饿鲨：世界";
-                        jh = "饥饿鲨：进化";
                     } else if ("zh".equals(language) && "Hant".equals(script)) {
                         dl = "跳舞的線";
                         zq = "飢餓鯊：世界";
@@ -235,45 +207,43 @@ public class MainActivity extends Activity {
                         jh = "饥饿鲨：进化";
                     }
                     final String[] items = {dl, zq, jh, qx};
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle(R.string.Open_MG)
-                            .setItems(items, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // 处理点击事件
-                                    String selectedOption = items[which];
-                                    if (selectedOption.equals(dl)) {
-                                        String packageName = "com.cmplay.dancingline";
-                                        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-                                        if (intent != null) {
-                                            Toast.makeText(MainActivity.this, R.string.opmg, Toast.LENGTH_SHORT).show();
-                                            startActivity(intent);
-                                        } else {
-                                            Toast.makeText(MainActivity.this, R.string.nomg, Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else if (selectedOption.equals(zq)) {
-                                        String packageName = "com.fgol.hsw.zq";
-                                        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-                                        if (intent != null) {
-                                            Toast.makeText(MainActivity.this, R.string.opmg, Toast.LENGTH_SHORT).show();
-                                            startActivity(intent);
-                                        } else {
-                                            Toast.makeText(MainActivity.this, R.string.nomg, Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else if (selectedOption.equals(jh)) {
-                                        String packageName = "com.fgol";
-                                        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-                                        if (intent != null) {
-                                            Toast.makeText(MainActivity.this, R.string.opmg, Toast.LENGTH_SHORT).show();
-                                            startActivity(intent);
-                                        } else {
-                                            Toast.makeText(MainActivity.this, R.string.nomg, Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }
-                            });
-
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+					builder.setTitle(R.string.Open_MG)
+						.setItems(items, new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								String selectedOption = items[which];
+								if (selectedOption.equals(dl)) {
+									String packageName = "com.cmplay.dancingline";
+									Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+									if (intent != null) {
+										Toast.makeText(MainActivity.this, R.string.opmg, Toast.LENGTH_SHORT).show();
+										startActivity(intent);
+									} else {
+										Toast.makeText(MainActivity.this, R.string.nomg, Toast.LENGTH_SHORT).show();
+									}
+								} else if (selectedOption.equals(zq)) {
+									String packageName = "com.fgol.hsw.zq";
+									Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+									if (intent != null) {
+										Toast.makeText(MainActivity.this, R.string.opmg, Toast.LENGTH_SHORT).show();
+										startActivity(intent);
+									} else {
+										Toast.makeText(MainActivity.this, R.string.nomg, Toast.LENGTH_SHORT).show();
+									}
+								} else if (selectedOption.equals(jh)) {
+									String packageName = "com.fgol";
+									Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+									if (intent != null) {
+										Toast.makeText(MainActivity.this, R.string.opmg, Toast.LENGTH_SHORT).show();
+										startActivity(intent);
+									} else {
+										Toast.makeText(MainActivity.this, R.string.nomg, Toast.LENGTH_SHORT).show();
+									}
+								}
+							}
+						});
+					AlertDialog dialog = builder.create();
+					dialog.show();
                 }
             });
         ImageView image = findViewById(R.id.ONEicon);
@@ -285,7 +255,8 @@ public class MainActivity extends Activity {
                     startActivity(intent);
                 }
             });
-        checkForUpdates();
+        Api a = new Api();
+        a.checkForUpdates(null, MainActivity.this, false);
         String filePath = getDataDir().getAbsolutePath() + "/file/imginfo.txt";
         File file = new File(filePath);
         if (file.exists()) {
@@ -339,10 +310,8 @@ public class MainActivity extends Activity {
                 URL url = new URL(strings[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
-
                 InputStream input = connection.getInputStream();
                 return BitmapFactory.decodeStream(input);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -360,53 +329,6 @@ public class MainActivity extends Activity {
             }
         }
     }
-    private void checkForUpdates() {
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    URL url = new URL("https://sb6.me/FuckRollingSky/getvercode.txt");
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    String versionCodeString = reader.readLine();
-                    return Integer.parseInt(versionCodeString);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return -1; // 表示获取版本号失败
-                }
-            }
-            @Override
-            protected void onPostExecute(Integer latestVersionCode) {
-                super.onPostExecute(latestVersionCode);
-
-                if (latestVersionCode > currentVersionCode) {
-                    // 存在新版本，显示对话框
-                    showUpdateDialog();
-                } else if (latestVersionCode == -1) {
-                    // 获取版本号失败，显示提示
-                    Toast.makeText(MainActivity.this, R.string.Inspect_Fail, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }.execute();
-    }
-    private void showUpdateDialog() {
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setCancelable(false)
-            .setTitle(R.string.New_Ver)
-            .setMessage(R.string.Update)
-            .setPositiveButton(R.string.Up, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // 跳转至更新链接
-                    String url = "https://sb6.me/FuckRollingSky/download";
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent);
-                }
-            })
-            .setNegativeButton(R.string.No, null)
-            .create();
-        dialog.show();
-    }
     private void setimg() {
         String filePath = getDataDir().getAbsolutePath() + "/file/image.png";
         File file = new File(filePath);
@@ -423,13 +345,10 @@ public class MainActivity extends Activity {
             String filePath = getDataDir().getAbsolutePath() + "/file/";
             String fileName = "image.png";
             File directory = new File(filePath);
-
             if (!directory.exists()) {
                 directory.mkdirs();
             }
-
             File file = new File(directory, fileName);
-
             try {
                 FileOutputStream outStream = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
@@ -451,35 +370,9 @@ public class MainActivity extends Activity {
     private void showVersionDialog(String content) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.zcbb_a);
+		content = content.replaceAll("\\n$", "");
         builder.setMessage(content);
         builder.setPositiveButton(R.string.OK, null);
         builder.show();
-    }
-	private boolean checkTitan() {
-        boolean z = false;
-        try {
-            Scanner scanner = new Scanner(new File("/proc/self/mounts"));
-            while (scanner.hasNextLine()) {
-                if (scanner.nextLine().contains("titan")) {
-                    z = true;
-                }
-            }
-        } catch (Exception e) {
-        }
-        return z;
-    }
-
-    private boolean checkVmos() {
-        boolean z = false;
-        try {
-            Scanner scanner = new Scanner(new File("/system.prop"));
-            while (scanner.hasNextLine()) {
-                if (scanner.nextLine().contains("vmos")) {
-                    z = true;
-                }
-            }
-        } catch (Exception e) {
-        }
-        return z;
     }
 }

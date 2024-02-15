@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class AboutActivity extends Activity {
@@ -30,6 +28,13 @@ public class AboutActivity extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setCustomView(R.layout.actionbar_title);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		String filePath = getDataDir().getAbsolutePath() + "/file/image.png";
+        File file = new File(filePath);
+        if (file.exists()) {
+            ImageView imageView = findViewById(R.id.Background);
+            Bitmap bitmap2 = BitmapFactory.decodeFile(filePath);
+            imageView.setImageBitmap(bitmap2);
+        }
 		ImageView image = findViewById(R.id.ONEicon);
         image.setImageResource(R.drawable.back);
         image.setOnClickListener(new View.OnClickListener() {
@@ -51,13 +56,6 @@ public class AboutActivity extends Activity {
                     }
                 }
             });
-        String filePath = getDataDir().getAbsolutePath() + "/file/image.png";
-        File file = new File(filePath);
-        if (file.exists()) {
-            ImageView imageView = findViewById(R.id.Background);
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            imageView.setImageBitmap(bitmap);
-        }
 		genggai();
         Button mainicon = findViewById(R.id.ycicon);
         mainicon.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +123,7 @@ public class AboutActivity extends Activity {
                     try {
                         if (!file.exists()) {
                             file.createNewFile();
-                            writeToFile(file, "1");
+                            Api.writeToFile(file, "1");
                             Toast.makeText(AboutActivity.this, R.string.sfi, Toast.LENGTH_SHORT).show();
                         } else {
                             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -134,10 +132,10 @@ public class AboutActivity extends Activity {
 
                             if (line != null) {
                                 if (line.equals("0")) {
-                                    writeToFile(file, "1");
+                                    Api.writeToFile(file, "1");
                                     Toast.makeText(AboutActivity.this, R.string.sfi, Toast.LENGTH_SHORT).show();
                                 } else if (line.equals("1")) {
-                                    writeToFile(file, "0");
+                                    Api.writeToFile(file, "0");
                                     Toast.makeText(AboutActivity.this, R.string.sni, Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -148,15 +146,6 @@ public class AboutActivity extends Activity {
 					genggai();
                 }
             });
-    }
-    private static void writeToFile(File file, String content) {
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(content);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 	private void genggai() {
 		String SfilePath = getDataDir().getAbsolutePath() + "/file/imginfo.txt";

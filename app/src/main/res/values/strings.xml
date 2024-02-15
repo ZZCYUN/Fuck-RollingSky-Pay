@@ -8,7 +8,6 @@
     <string name="Modules_Off">模块未激活</string>
     <string name="Modules_On">模块已激活</string>
 	<string name="Modules_On_VM">虚拟环境激活</string>
-	<string name="Modules_On_VMOS">虚拟机激活</string>
     <string name="Modules_Off_Tips">当前模块未激活，您将无法使用本模块的免内购和过联网验证功能\n\n解决方法：\n如果没有XP环境可以尝试刷入LSPosed或Edxposed并勾选此模块后重启手机\n如果有XP环境请勾选此模块并重启手机</string>
     <string name="OK">好</string>
     <string name="Open_Browser">正在尝试拉起浏览器</string>
@@ -22,10 +21,7 @@
     <string name="Load_Ing">稍安勿躁......\n耐心，是生活的关键。</string>
     <string name="No_Web">网络链接异常！</string>
     <string name="No">取消</string>
-    <string name="New_Ver">发现新版本</string>
-    <string name="Update">新版本可用，是否更新？</string>
     <string name="Inspect_Fail">检查更新失败，请检查你的网络</string>
-    <string name="Up">更新</string>
     <string name="danger">重要提示</string>
     <string name="alert">隐藏桌面图标后，你可以在xposed管理器打开此模块。\n部分系统可能不支持，依然会存在桌面图标，但无法正常进入此程序！\n无特殊需求不要这样做！</string>
     <string name="sb">我依然隐藏</string>

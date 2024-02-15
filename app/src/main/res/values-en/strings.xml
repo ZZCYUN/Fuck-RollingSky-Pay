@@ -7,7 +7,6 @@
     <string name="Modules_Off">Module Deactivated</string>
     <string name="Modules_On">Module Activated</string>
     <string name="Modules_On_VM">Virtual Environment Activated</string>
-    <string name="Modules_On_VMOS">Virtual Machine Activated</string>
     <string name="Modules_Off_Tips">The current module is deactivated. You won\'t be able to use the in-app purchase bypass and online verification bypass features.\n\nSolution:\nIf you don\'t have an XP environment, try installing LSPosed or Edxposed and check this module before restarting your phone.\nIf you have an XP environment, check this module and restart your phone.</string>
     <string name="OK">OK</string>
     <string name="Open_Browser">Attempting to open the browser...</string>
@@ -21,10 +20,7 @@
     <string name="Load_Ing">Patience is key. Be calm...\nPatience is the essence of life.</string>
     <string name="No_Web">Network connection error!</string>
     <string name="No">Cancel</string>
-    <string name="New_Ver">New Version Found</string>
-    <string name="Update">A new version is available. Update now?</string>
     <string name="Inspect_Fail">Failed to check for updates. Please check your network.</string>
-    <string name="Up">Update</string>
     <string name="danger">Important Note</string>
     <string name="alert">After hiding the desktop icon, you can open this module in the Xposed Manager.\nSome systems may not support this, and the desktop icon may still exist but won\'t function properly!\nAvoid doing this unless necessary!</string>
     <string name="sb">I still want to hide</string>

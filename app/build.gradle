@@ -8,8 +8,8 @@ android {
         applicationId "Fuck.RollingSky.Pay"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 120
-        versionName "1.2.0"
+        versionCode 129
+        versionName "1.2.9"
     }
 
     buildTypes {
