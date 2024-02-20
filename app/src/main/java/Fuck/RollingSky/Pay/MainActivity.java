@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final Api api = new Api();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActionBar actionBar=getActionBar();
@@ -65,42 +66,7 @@ public class MainActivity extends Activity {
         openBrowserButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String language = Locale.getDefault().getLanguage();
-                    String script = Locale.getDefault().getScript();
-                    if ("en".equals(language)) {
-                        new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb_en.txt");
-                    } else if ("zh".equals(language) && "Hant".equals(script)) {
-                        new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb_tw.txt");
-                    } else {
-                        new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb.txt");
-                    }
-                }
-                public class DownloadContentTask extends AsyncTask<String, Void, String> {
-                    @Override
-                    protected String doInBackground(String... urls) {
-                        try {
-                            URL url = new URL(urls[0]);
-                            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                            StringBuilder stringBuilder = new StringBuilder();
-                            String line;
-                            while ((line = bufferedReader.readLine()) != null) {
-                                stringBuilder.append(line).append("\n");
-                            }
-                            bufferedReader.close();
-                            return stringBuilder.toString();
-                        } catch (Exception e) {
-                            return null;
-                        }
-                    }
-                    @Override
-                    protected void onPostExecute(String result) {
-                        if (result != null) {
-                            showVersionDialog(result);
-                        } else {
-                            Toast.makeText(MainActivity.this, R.string.No_Web, Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    api.showgg(true);
                 }
             });
         Button openRSButton = findViewById(R.id.openRSButton);
@@ -162,7 +128,7 @@ public class MainActivity extends Activity {
                                             Toast.makeText(MainActivity.this, R.string.No_RS, Toast.LENGTH_SHORT).show();
                                         }
                                     } else if (selectedOption.equals(vo)) {
-                                        String packageName = "com.turbochilli.rollingsky_cn.huawei";
+                                        String packageName = "com.turbochilli.rollingsky_cn.vivo";
                                         Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
                                         if (intent != null) {
                                             Toast.makeText(MainActivity.this, R.string.Open_RollingSky, Toast.LENGTH_SHORT).show();
@@ -255,8 +221,7 @@ public class MainActivity extends Activity {
                     startActivity(intent);
                 }
             });
-        Api a = new Api();
-        a.checkForUpdates(null, MainActivity.this, false);
+        api.checkForUpdates(null, MainActivity.this, false);
         String filePath = getDataDir().getAbsolutePath() + "/file/imginfo.txt";
         File file = new File(filePath);
         if (file.exists()) {
@@ -366,13 +331,5 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "Failed to save image", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-    private void showVersionDialog(String content) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.zcbb_a);
-		content = content.replaceAll("\\n$", "");
-        builder.setMessage(content);
-        builder.setPositiveButton(R.string.OK, null);
-        builder.show();
     }
 }
