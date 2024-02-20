@@ -27,6 +27,7 @@ public class Api {
     Context context;
 	URL url;
 	int ggc;
+    boolean hsb;
     public static void writeToFile(File file, String content) {
         try {
             FileWriter writer = new FileWriter(file);
@@ -39,13 +40,12 @@ public class Api {
 	public void checkForUpdates(final Handler handler, Context a, final boolean b) {
 		context = a;
 		try {
-			if (b){
+			if (b) {
 				url = new URL("https://sb6.me/FuckRollingSky/getmodever.txt");
 			} else {
 				url = new URL("https://sb6.me/FuckRollingSky/getvercode.txt");
 			}
-		}
-		catch (MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
         new AsyncTask<Void, Void, Integer>() {
@@ -98,7 +98,7 @@ public class Api {
                     showUpdateDialog();
 					GetGG();
                 } else if (latestVersionCode == -1) {
-					if(b){
+					if (b) {
 						String language = Locale.getDefault().getLanguage();
 						String script = Locale.getDefault().getScript();
 						if ("en".equals(language)) {
@@ -113,7 +113,7 @@ public class Api {
 					}
                 } else {
 					GetGG();
-                    if(b){
+                    if (b) {
 						handler.sendEmptyMessage(114514);
 					}
                 }
@@ -184,7 +184,7 @@ public class Api {
                 } else {
 					String filePath = context.getDataDir().getAbsolutePath() + "/file/ggCode.txt";
                     File parentfile = new File(context.getDataDir().getAbsolutePath() + "/file");
-                    if(!parentfile.exists()){
+                    if (!parentfile.exists()) {
                         parentfile.mkdirs();
                     }
 					File file = new File(filePath);
@@ -192,7 +192,7 @@ public class Api {
 						if (!file.exists()) {
 							file.createNewFile();
 							writeToFile(file, "0");
-							showgg();
+							showgg(false);
 						} else {
 							BufferedReader reader = new BufferedReader(new FileReader(file));
 							String line = reader.readLine();
@@ -201,7 +201,7 @@ public class Api {
 							if (line != null) {
 								if (i == latestVersionCode) {
 								} else {
-									showgg();
+									showgg(false);
 								}
 							}
 						}
@@ -212,16 +212,27 @@ public class Api {
             };
         }.execute();
 	}
-	private void showgg() {
+	public void showgg(boolean b) {
+        hsb = b;
 		String language = Locale.getDefault().getLanguage();
 		String script = Locale.getDefault().getScript();
-		if ("en".equals(language)) {
-			new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/context_en.txt");
-		} else if ("zh".equals(language) && "Hant".equals(script)) {
-			new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/context_tw.txt");
-		} else {
-			new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/context.txt");
-		}
+        if (hsb) {
+            if ("en".equals(language)) {
+                new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb_en.txt");
+            } else if ("zh".equals(language) && "Hant".equals(script)) {
+                new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb_tw.txt");
+            } else {
+                new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/zcbb.txt");
+            }
+        } else {
+            if ("en".equals(language)) {
+                new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/context_en.txt");
+            } else if ("zh".equals(language) && "Hant".equals(script)) {
+                new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/context_tw.txt");
+            } else {
+                new DownloadContentTask().execute("https://sb6.me/FuckRollingSky/context.txt");
+            }
+        }
 	}
 	public class DownloadContentTask extends AsyncTask<String, Void, String> {
 		@Override
@@ -239,6 +250,7 @@ public class Api {
 				return stringBuilder.toString();
 			} catch (Exception e) {
 				return null;
+                
 			}
 		}
 		@Override
@@ -263,30 +275,39 @@ public class Api {
 			}
 			if (result != null) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setTitle(bt);
-				LinearLayout linear = new LinearLayout(context);
-				TextView textview = new TextView(context);
-				DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-				int dpToPxFactor = (int) Math.ceil(metrics.scaledDensity);
-				textview.setPadding((20 * dpToPxFactor), (10 * dpToPxFactor), (20 * dpToPxFactor), 0);
-				result = result.replaceAll("\\n$", "");
-				textview.setText(result);
-				textview.setTextIsSelectable(true);
-				linear.addView(textview);
-				builder.setView(linear);
+                result = result.replaceAll("\\n$", "");
+                if (hsb) {
+                    builder.setTitle(R.string.zcbb_a);
+                    builder.setMessage(result);
+                } else {
+                    builder.setTitle(bt);
+                    LinearLayout linear = new LinearLayout(context);
+                    TextView textview = new TextView(context);
+                    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                    int dpToPxFactor = (int) Math.ceil(metrics.scaledDensity);
+                    textview.setPadding((20 * dpToPxFactor), (10 * dpToPxFactor), (20 * dpToPxFactor), 0);
+                    textview.setText(result);
+                    textview.setTextIsSelectable(true);
+                    linear.addView(textview);
+                    builder.setView(linear);
+                    builder.setNeutralButton(qx, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dia, int which) {
+                                String filePath = context.getDataDir().getAbsolutePath() + "/file/ggCode.txt";
+                                File file = new File(filePath);
+                                String s = String.valueOf(ggc);
+                                Api.writeToFile(file, s);
+                            }
+                        });
+                }
 				builder.setPositiveButton(gx, null);
-				builder.setNeutralButton(qx, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dia, int which) {
-							String filePath = context.getDataDir().getAbsolutePath() + "/file/ggCode.txt";
-							File file = new File(filePath);
-							String s = String.valueOf(ggc);
-							Api.writeToFile(file, s);
-						}
-					});
 				builder.show();
 			} else {
-				Toast.makeText(context, "Error Fail", Toast.LENGTH_SHORT).show();
+				if (hsb){
+                    Toast.makeText(context, R.string.No_Web, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Error Fail", Toast.LENGTH_SHORT).show();
+                }
 			}
 		}
 	}
