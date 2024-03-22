@@ -4,13 +4,11 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,10 +21,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -242,57 +241,46 @@ public class MainActivity extends Activity {
             getimg();
         }
     }
-    public void getimg() {
-        ImageView imageView = findViewById(R.id.Background);
-        //二次元随机图片API
-        String imageUrl = "https://www.loliapi.com/acg/";
-        LoadImageTask task = new LoadImageTask(this, imageView);
-        task.execute(imageUrl);
+    private void getimg() {
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setTitle(R.string.Load);
+        progressDialog.setMessage(getString(R.string.Load_Ing));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        final ImageView imageView = findViewById(R.id.Background);
+        final String imageUrl = "https://www.loliapi.com/acg/";
+        final Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        URL url = new URL(imageUrl);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.connect();
+                        InputStream input = connection.getInputStream();
+                        final Bitmap bitmap = BitmapFactory.decodeStream(input);
+                        runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressDialog.dismiss();
+                                    if (bitmap != null) {
+                                        imageView.setImageBitmap(bitmap);
+                                        executor.execute(new SaveImageTask(bitmap));
+                                    } else {
+                                        Toast.makeText(MainActivity.this, R.string.No_Web, Toast.LENGTH_SHORT).show();
+                                        setimg();
+                                    }
+                                }
+                            });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                }
+            });
     }
     private boolean isModuleActivated() {
         return false;
-    }
-    public class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private Context context;
-        private ProgressDialog progressDialog;
-        private ImageView imageView;
-        public LoadImageTask(Context context, ImageView imageView) {
-            this.context = context;
-            this.imageView = imageView;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setTitle(R.string.Load);
-            progressDialog.setMessage(getString(R.string.Load_Ing));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            try {
-                URL url = new URL(strings[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                return BitmapFactory.decodeStream(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            progressDialog.dismiss();
-            if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
-                new SaveImageTask().execute(bitmap);
-            } else {
-                Toast.makeText(MainActivity.this, R.string.No_Web, Toast.LENGTH_SHORT).show();
-                setimg();
-            }
-        }
     }
     private void setimg() {
         String filePath = getDataDir().getAbsolutePath() + "/file/image.png";
@@ -303,10 +291,13 @@ public class MainActivity extends Activity {
             imageView.setImageBitmap(bitmap2);
         }
     }
-    private class SaveImageTask extends AsyncTask<Bitmap, Void, Boolean> {
+    private class SaveImageTask implements Runnable {
+        private Bitmap bitmap;
+        public SaveImageTask(Bitmap bitmap) {
+            this.bitmap = bitmap;
+        }
         @Override
-        protected Boolean doInBackground(Bitmap... bitmaps) {
-            Bitmap bitmap = bitmaps[0];
+        public void run() {
             String filePath = getDataDir().getAbsolutePath() + "/file/";
             String fileName = "image.png";
             File directory = new File(filePath);
@@ -319,16 +310,14 @@ public class MainActivity extends Activity {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
                 outStream.flush();
                 outStream.close();
-                return true;
             } catch (IOException e) {
                 e.printStackTrace();
-                return false;
-            }
-        }
-        @Override
-        protected void onPostExecute(Boolean success) {
-            if (!success) {
-                Toast.makeText(MainActivity.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Save Fali", Toast.LENGTH_SHORT).show();
+                        }
+                    });
             }
         }
     }
